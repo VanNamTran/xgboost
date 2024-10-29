@@ -140,7 +140,7 @@ col1, col2, col3 = st.columns(3)
 
 # Cột 1: Tuổi và Nghề nghiệp
 with col1:
-    age = st.number_input("Tuổi", min_value=18, max_value=72, value=30)
+    age = st.number_input("Tuổi", min_value=18, max_value=99, value=30)
     job = st.selectbox("Nghề nghiệp", [
         "admin", "management", "retired", "unemployed", "student", "technician", 
         "entrepreneur", "services", "blue_collar", "self_employed", "housemaid"
@@ -154,7 +154,7 @@ with col2:
 # Cột 3: Nợ xấu và Số dư
 with col3:
     default = st.selectbox("Nợ xấu", ["yes", "no"])
-    balance = st.number_input("Số dư", min_value=-1884, max_value=3415, value=0)
+    balance = st.number_input("Số dư", min_value=-9999, max_value=9999, value=0)
 
 # Nhóm thông tin về khoản vay và liên lạc
 st.subheader("Thông tin khoản vay và liên lạc")
@@ -178,7 +178,7 @@ with col6:
         "may", "jun", "jul", "aug", "oct", "dec", 
         "feb", "mar", "apr", "sep", "nov", "jan"
     ])
-    duration = st.number_input("Thời gian liên hệ", min_value=0, max_value=3881, value=0)
+    duration = st.number_input("Thời gian liên hệ", min_value=0, max_value=9999, value=0)
 
 # Nhóm thông tin liên hệ trước đó
 st.subheader("Thông tin liên hệ trước đó")
@@ -193,7 +193,7 @@ with col7:
 
 # Cột 8: Lần liên hệ trước và Kết quả liên hệ trước
 with col8:
-    previous = st.number_input("Lần liên hệ trước", min_value=0, max_value=99, value=0)
+    previous = st.number_input("Lần liên hệ trước", min_value=-1, max_value=99999, value=0)
     poutcome = st.selectbox("Kết quả liên hệ trước", ["unknown", "success", "failure"])
 
 # Preprocessing và dự đoán
