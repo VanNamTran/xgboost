@@ -1,6 +1,6 @@
 # xgboost
 Mô hình máy học dự đoán hành vi khách hàng sử dụng xgboost
-Chương trình này thuộc báo cáo đồ án môn học BIGDATA tại trường đại học Kinh Tế Luật
+Chương trình này thuộc báo cáo đồ án môn học BIGDATA tại trường Đại học Kinh Tế Luật
 
 Giảng viên hướng dẫn:  TS Nguyễn Thôn Dã
 
