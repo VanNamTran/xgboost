@@ -13,4 +13,4 @@ Nhóm sinh viên
 6. K214061745, Lê Dương Thảo
 
 
-comman run: python -m streamlit "filename.py"
+comman run: python -m streamlit run "filename.py"
