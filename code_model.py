@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import xgboost as xgb
-
+import time
 
 xgb_classifier = xgb.XGBClassifier()
 xgb_classifier.load_model("xgboost_model.json")
@@ -127,63 +127,127 @@ def preprocess_data(input_data):
     
     return features
 # Tạo giao diện nhập dữ liệu với Streamlit
+import streamlit as st
+import numpy as np
+
 st.title("Dự đoán mô hình")
 
-# Tạo 3 cột
+# Nhóm thông tin cá nhân và thông tin tài chính
+st.subheader("Thông tin cá nhân và tài chính")
+
+# Tạo 3 cột đầu tiên
 col1, col2, col3 = st.columns(3)
 
-# Cột 1
+# Cột 1: Tuổi và Nghề nghiệp
 with col1:
     age = st.number_input("Tuổi", min_value=18, max_value=72, value=30)
-    job = st.selectbox("Nghề nghiệp", ["admin", "management", "retired", "unemployed", "student", "technician", "entrepreneur", "services", "blue_collar", "self_employed", "housemaid"])
-    marital = st.selectbox("Tình trạng hôn nhân", ["married", "single", "divorced"])
+    job = st.selectbox("Nghề nghiệp", [
+        "admin", "management", "retired", "unemployed", "student", "technician", 
+        "entrepreneur", "services", "blue_collar", "self_employed", "housemaid"
+    ])
 
-# Cột 2
+# Cột 2: Tình trạng hôn nhân và Trình độ học vấn
 with col2:
+    marital = st.selectbox("Tình trạng hôn nhân", ["married", "single", "divorced"])
     education = st.selectbox("Trình độ học vấn", ["tertiary", "primary", "secondary"])
+
+# Cột 3: Nợ xấu và Số dư
+with col3:
     default = st.selectbox("Nợ xấu", ["yes", "no"])
     balance = st.number_input("Số dư", min_value=-1884, max_value=3415, value=0)
 
-# Cột 3
-with col3:
-    housing = st.selectbox("Vay mua nhà", ["yes", "no"])
-    loan = st.selectbox("Vay cá nhân", ["yes", "no"])
-    contact = st.selectbox("Phương thức liên lạc", ["unknown", "cellular", "telephone"])
+# Nhóm thông tin về khoản vay và liên lạc
+st.subheader("Thông tin khoản vay và liên lạc")
 
-# Dòng thứ hai của lưới với 3 cột
+# Tạo 3 cột tiếp theo
 col4, col5, col6 = st.columns(3)
 
-# Cột 4
+# Cột 4: Vay mua nhà và Vay cá nhân
 with col4:
-    day = st.number_input("Ngày gọi", min_value=1, max_value=31, value=1)
-    month = st.selectbox("Tháng gọi", ["may", "jun", "jul", "aug", "oct", "dec", "feb", "mar", "apr", "sep", "nov", "jan"])
+    housing = st.selectbox("Vay mua nhà", ["yes", "no"])
+    loan = st.selectbox("Vay cá nhân", ["yes", "no"])
 
-# Cột 5
+# Cột 5: Phương thức liên lạc và Ngày gọi
 with col5:
-    duration = st.number_input("Thời gian liên hệ", min_value=0, max_value=3881, value=0)
-    campaign = st.number_input("Số chiến dịch", min_value=1, max_value=11, value=1)
+    contact = st.selectbox("Phương thức liên lạc", ["unknown", "cellular", "telephone"])
+    day = st.number_input("Ngày gọi", min_value=1, max_value=31, value=1)
 
-# Cột 6
+# Cột 6: Tháng gọi và Thời gian liên hệ
 with col6:
+    month = st.selectbox("Tháng gọi", [
+        "may", "jun", "jul", "aug", "oct", "dec", 
+        "feb", "mar", "apr", "sep", "nov", "jan"
+    ])
+    duration = st.number_input("Thời gian liên hệ", min_value=0, max_value=3881, value=0)
+
+# Nhóm thông tin liên hệ trước đó
+st.subheader("Thông tin liên hệ trước đó")
+
+# Tạo 3 cột cuối cùng
+col7, col8, col9 = st.columns(3)
+
+# Cột 7: Số chiến dịch và Số ngày từ lần liên hệ trước
+with col7:
+    campaign = st.number_input("Số chiến dịch", min_value=1, max_value=11, value=1)
     pdays = st.number_input("Số ngày từ lần liên hệ trước", min_value=0, max_value=999, value=0)
+
+# Cột 8: Lần liên hệ trước và Kết quả liên hệ trước
+with col8:
     previous = st.number_input("Lần liên hệ trước", min_value=0, max_value=99, value=0)
     poutcome = st.selectbox("Kết quả liên hệ trước", ["unknown", "success", "failure"])
 
-
+# Preprocessing và dự đoán
 input_data = [age, job, marital, education, default, balance, housing, loan, contact, day, month, duration, campaign, pdays, previous, poutcome]
 features = preprocess_data(input_data)
 
-if st.button("Dự đoán"):
-    # Chuyển đổi đặc trưng đã chuẩn hóa thành numpy array
-    normalized_vector = np.array(features)
-    n_features = 55
-    X_full = np.zeros(n_features)
 
-    for i in range(len(normalized_vector)):
-        X_full[i] = normalized_vector[i]
 
-    X_full = X_full.reshape(1, -1)  # Chuyển thành 2D array với 1 hàng (1 sample)
-    prediction = xgb_classifier.predict(X_full)
+if st.button("Dự đoán", key="predict"):
+    # Thêm CSS để tùy chỉnh màu sắc và hiệu ứng
+    st.markdown("""
+        <style>
+        .stButton > button {
+            background-color: transparent; /* Nền trong suốt */
+            color: #4CAF50; /* Màu chữ xanh lá cây */
+            padding: 10px 20px;
+            border: 2px solid #4CAF50; /* Viền xanh lá cây */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s, color 0.3s;
+        }
+        .stButton > button:hover { 
+            color: white; /* Màu chữ trắng khi di chuột */
+            transform: scale(1.05); 
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
-    st.write(f"Đặc trưng đã xử lý: {features}")
-    st.write(f"Dự đoán: {prediction[0]}")
+    # Hiệu ứng tải
+    with st.spinner("Đang dự đoán..."):
+        time.sleep(1) 
+        
+        # Chuyển đổi đặc trưng đã chuẩn hóa thành numpy array
+        normalized_vector = np.array(features)
+        n_features = 55
+        X_full = np.zeros(n_features)
+
+        for i in range(len(normalized_vector)):
+            X_full[i] = normalized_vector[i]
+
+        X_full = X_full.reshape(1, -1)  
+        prediction = xgb_classifier.predict(X_full)
+
+    st.success("Dự đoán hoàn tất!") 
+    result_description = {
+        0: "Không đạt yêu cầu: Khách hàng không đủ điều kiện để đăng ký gửi tiền có kỳ hạn.",
+        1: "Đạt yêu cầu: Khách hàng đủ điều kiện để đăng ký gửi tiền có kỳ hạn."
+        }
+
+    st.markdown(f"""
+    <div style='border: 2px solid #4CAF50; border-radius: 5px; padding: 10px;'>
+        <h4 style='margin: 0;'>Đặc trưng đã xử lý:</h4>
+        <p style='margin: 0; font-weight: bold;'>{features}</p>
+        <h4 style='margin: 0;'>Dự đoán:</h4>
+        <p style='margin: 0; font-weight: bold;'> {result_description[prediction[0]]}</p>
+    </div>
+""", unsafe_allow_html=True)
