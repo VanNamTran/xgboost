@@ -126,9 +126,7 @@ def preprocess_data(input_data):
     ])
     
     return features
-# Tạo giao diện nhập dữ liệu với Streamlit
-import streamlit as st
-import numpy as np
+
 
 st.title("Dự đoán mô hình")
 
