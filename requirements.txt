@@ -2,3 +2,4 @@ streamlit
 xgboost
 numpy
 scikit-learn
+random

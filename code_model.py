@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import xgboost as xgb
 import time
-
+import random
 xgb_classifier = xgb.XGBClassifier()
 xgb_classifier.load_model("xgboost_model.json")
 
@@ -207,16 +207,16 @@ if st.button("Dự đoán", key="predict"):
     st.markdown("""
         <style>
         .stButton > button {
-            background-color: transparent; /* Nền trong suốt */
+            background-color: transparent; 
             color: #4CAF50; /* Màu chữ xanh lá cây */
             padding: 10px 20px;
-            border: 2px solid #4CAF50; /* Viền xanh lá cây */
+            border: 2px solid #4CAF50; 
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s, color 0.3s;
         }
         .stButton > button:hover { 
-            color: white; /* Màu chữ trắng khi di chuột */
+            color: white; 
             transform: scale(1.05); 
         }
         </style>
@@ -243,11 +243,33 @@ if st.button("Dự đoán", key="predict"):
         1: "Đạt yêu cầu: Khách hàng đủ điều kiện để đăng ký gửi tiền có kỳ hạn."
         }
 
-    st.markdown(f"""
-    <div style='border: 2px solid #4CAF50; border-radius: 5px; padding: 10px;'>
-        <h4 style='margin: 0;'>Đặc trưng đã xử lý:</h4>
-        <p style='margin: 0; font-weight: bold;'>{features}</p>
-        <h4 style='margin: 0;'>Dự đoán:</h4>
-        <p style='margin: 0; font-weight: bold;'> {result_description[prediction[0]]}</p>
-    </div>
-""", unsafe_allow_html=True)
+#     st.markdown(f"""
+#     <div style='border: 2px solid #4CAF50; border-radius: 5px; padding: 10px;'>
+#         <h4 style='margin: 0;'>Đặc trưng đã xử lý:</h4>
+#         <p style='margin: 0; font-weight: bold;'>{features}</p>
+#         <h4 style='margin: 0;'>Dự đoán:</h4>
+#         <p style='margin: 0; font-weight: bold;'> {result_description[prediction[0]]}</p>
+#     </div>
+# """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        st.markdown(f"""
+        <div style='border: 2px solid #4CAF50; border-radius: 5px; padding: 10px;'>
+            <h4 style='margin: 0;'>Đặc trưng đã xử lý:</h4>
+            <p style='margin: 0; font-weight: bold;'>{features}</p>
+            <h4 style='margin: 0;'>Dự đoán:</h4>
+            <p style='margin: 0; font-weight: bold;'> {result_description[prediction[0]]}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    good_images = ["./image/nice.jpg", "./image/verynice.jpg"]
+    bad_images = ["./image/dark.png", "./image/oh.png","./image/3cham.png"]
+
+    if prediction[0] == 1:
+        image_path = random.choice(good_images)
+    else:
+        image_path = random.choice(bad_images)
+    with col2:
+        st.image(image_path, caption="", use_column_width=True)
